@@ -3,5 +3,5 @@
   <ServerVersion>Sql2014</ServerVersion>
   <ServerName>RMARCU-NWIN</ServerName>
   <DatabaseName>QiasMed</DatabaseName>
-  <DatabaseInformation Version="3" />
+  <DatabaseInformation Version="4" />
 </DatabaseSettings>

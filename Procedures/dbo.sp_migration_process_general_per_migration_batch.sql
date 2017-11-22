@@ -53,7 +53,6 @@ BEGIN
 	IF EXISTS (SELECT * FROM Product WHERE FkIdSupplier = @id_supplier and ISNULL(IsVisible, 0) <> 0)
 	BEGIN
 		SET @nb_updated = (SELECT COUNT(*) FROM Product WHERE FkIdSupplier = @id_supplier and ISNULL(IsVisible, 0) <> 0)
-
 		UPDATE Product 
 		SET IsVisible = 0
 		WHERE FkIdSupplier = @id_supplier and ISNULL(IsVisible, 0) <> 0
