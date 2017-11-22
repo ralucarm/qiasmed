@@ -11,11 +11,11 @@ GO
 -- =============================================
 CREATE PROCEDURE [dbo].[sp_migration_process_general_per_migration]
 	-- Add the parameters for the stored procedure here
-	  @file_path varchar(800) = 'C:\Users\win81\Desktop\qiasmed\koroglu_2017_09_V0.xlsx' 
+	  @file_path varchar(800) = 'C:\Users\win81\Desktop\qiasmed\fisiere_excel_de_import\koroglu_2017_09_V0.xlsx' 
 	 ,@excel_sheet_name varchar(150) = 'Produse'
 	 ,@migration_type varchar(50) = 'Excel'
 	 ,@id_migration_surse int = null
-	 ,@id_supplier int = 3
+	 ,@id_supplier int = 4
 	 ,@id_user int = 3
 AS
 BEGIN

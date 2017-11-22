@@ -50,6 +50,14 @@ BEGIN
 	CREATE TABLE TmpResults (IdProduct int, IntegerResult int, ErrorMessage NVARCHAR(4000), Stage varchar(255))
 	
 	SELECT @id_supplier = FkIdSupplier FROM MigrationLogs WHERE IdMigration = @id_migration
+	IF EXISTS (SELECT * FROM Product WHERE FkIdSupplier = @id_supplier and ISNULL(IsVisible, 0) <> 0)
+	BEGIN
+		SET @nb_updated = (SELECT COUNT(*) FROM Product WHERE FkIdSupplier = @id_supplier and ISNULL(IsVisible, 0) <> 0)
+
+		UPDATE Product 
+		SET IsVisible = 0
+		WHERE FkIdSupplier = @id_supplier and ISNULL(IsVisible, 0) <> 0
+	END
 
 	BEGIN TRY
 	BEGIN TRANSACTION sp_migration_process;	
@@ -111,16 +119,9 @@ BEGIN
 			BEGIN	
 				IF(@details_error = '' AND @nb_errors = 0)
 				BEGIN
-					IF EXISTS (SELECT * FROM Product WHERE ProductName = @name AND FkIdSupplier = @id_supplier)
-					BEGIN
-						UPDATE Product 
-						SET IsVisible = 0
-						WHERE ProductName = @name AND FkIdSupplier = @id_supplier
-						
-						SET @nb_updated = @nb_updated + 1
-					END
-					INSERT INTO Product ([FKIdSupplier],[FKIdCategory],[FKIdProducer],[ProductName],[PricePerUnit],[IsVisible],[UnitsPerPackage], [ProductCode], [FkIdUnitType], [FkIdMeasurementUnit], [FkIdMigration])
-					SELECT @id_supplier as [FKIdSupplier], @id_category AS [FKIdCategory], NULL as [FKIdProducer], @name as [ProductName]
+					
+					INSERT INTO Product ([FKIdSupplier],[FKIdCategory],[ProductName],[PricePerUnit],[IsVisible],[UnitsPerPackage], [ProductCode], [FkIdUnitType], [FkIdMeasurementUnit], [FkIdMigration])
+					SELECT @id_supplier as [FKIdSupplier], @id_category AS [FKIdCategory], @name as [ProductName]
 						, @unit_price as [PricePerUnit], 1 as [IsVisible], CAST(@units_per_package AS decimal(8,2)) as [UnitsPerPackage]
 						,@product_code as [ProductCode], @id_unit_type as [FkIdUnitType], @id_measurement_unit as [FkIdMeasurementUnit], @id_migration as FkIdMigration
 					SET @id_product = SCOPE_IDENTITY()

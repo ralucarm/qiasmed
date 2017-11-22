@@ -6,7 +6,6 @@ CREATE TABLE [dbo].[Product] (
 		[IdProduct]               [int] IDENTITY(1, 1) NOT NULL,
 		[FKIdSupplier]            [int] NOT NULL,
 		[FKIdCategory]            [int] NOT NULL,
-		[FKIdProducer]            [int] NULL,
 		[PricePerUnit]            [decimal](8, 2) NULL,
 		[UnitsPerPackage]         [decimal](8, 2) NULL,
 		[IsVisible]               [bit] NULL,
@@ -46,14 +45,6 @@ ALTER TABLE [dbo].[Product]
 	FOREIGN KEY ([FKIdCurrency]) REFERENCES [dbo].[Currency] ([IdCurrency])
 ALTER TABLE [dbo].[Product]
 	CHECK CONSTRAINT [FK_Product_Currency]
-
-GO
-ALTER TABLE [dbo].[Product]
-	WITH CHECK
-	ADD CONSTRAINT [FK_Product_Producer]
-	FOREIGN KEY ([FKIdProducer]) REFERENCES [dbo].[Producer] ([IdProducer])
-ALTER TABLE [dbo].[Product]
-	CHECK CONSTRAINT [FK_Product_Producer]
 
 GO
 ALTER TABLE [dbo].[Product]
