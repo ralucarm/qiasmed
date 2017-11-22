@@ -1,13 +1,22 @@
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
 CREATE PROCEDURE [dbo].[sp_migration_process_general_insert_tables_data_retreat]
-		@id_migration int 
+	-- Add the parameters for the stored procedure here
+	@id_migration int 
 AS
 BEGIN
-			SET NOCOUNT ON;
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
 
-    	IF EXISTS (SELECT * FROM sys.objects WHERE [object_id] = OBJECT_ID('tmp_import_excel'))
+    -- Insert statements for procedure here
+	IF EXISTS (SELECT * FROM sys.objects WHERE [object_id] = OBJECT_ID('tmp_import_excel'))
 	BEGIN
 		DROP TABLE tmp_import_excel;
 	END

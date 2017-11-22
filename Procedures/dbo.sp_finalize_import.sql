@@ -1,13 +1,22 @@
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
 CREATE PROCEDURE [dbo].[sp_finalize_import]
-		@id_migration int = 2
+	-- Add the parameters for the stored procedure here
+	@id_migration int = 2
 AS
 BEGIN
-			SET NOCOUNT ON;
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
 
-    	DECLARE @details_error varchar(max) = ''
+    -- Insert statements for procedure here
+	DECLARE @details_error varchar(max) = ''
 		,@nb_categories int = 0
 		,@categories varchar(2000) = ''
 		,@nb_type_units int = 0
@@ -155,7 +164,8 @@ BEGIN
 		END
 	END
 
-	
+	--select len(@details_error), DATALENGTH(@details_error), @details_error
+
 	UPDATE MigrationLogs
 	SET Details = @details_error
 	WHERE IdMigration = @id_migration

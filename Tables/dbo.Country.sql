@@ -5,7 +5,11 @@ GO
 CREATE TABLE [dbo].[Country] (
 		[IdCountry]     [int] IDENTITY(1, 1) NOT NULL,
 		[Name]          [nvarchar](100) COLLATE Latin1_General_CI_AS NULL,
-
+		CONSTRAINT [PK_Country]
+		PRIMARY KEY
+		CLUSTERED
+		([IdCountry])
+	ON [PRIMARY]
 ) ON [PRIMARY]
 GO
 ALTER TABLE [dbo].[Country] SET (LOCK_ESCALATION = TABLE)

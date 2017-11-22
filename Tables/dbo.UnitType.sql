@@ -5,7 +5,11 @@ GO
 CREATE TABLE [dbo].[UnitType] (
 		[IdUnitType]     [int] IDENTITY(1, 1) NOT NULL,
 		[Name]           [varchar](150) COLLATE Latin1_General_CI_AS NULL,
-
+		CONSTRAINT [PK__UnitType__586AAC6F0008F99A]
+		PRIMARY KEY
+		CLUSTERED
+		([IdUnitType])
+	ON [PRIMARY]
 ) ON [PRIMARY]
 GO
 ALTER TABLE [dbo].[UnitType] SET (LOCK_ESCALATION = TABLE)

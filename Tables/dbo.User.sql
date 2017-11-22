@@ -10,8 +10,17 @@ CREATE TABLE [dbo].[User] (
 		[Lastname]        [nvarchar](50) COLLATE Latin1_General_CI_AS NULL,
 		[PhoneNumber]     [nvarchar](50) COLLATE Latin1_General_CI_AS NULL,
 		[IsDeleted]       [bit] NULL,
-
+		CONSTRAINT [PK_User]
+		PRIMARY KEY
+		CLUSTERED
+		([IdUser])
+	ON [PRIMARY]
 ) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[User]
+	ADD
+	CONSTRAINT [DF_User_IsDeleted]
+	DEFAULT ((0)) FOR [IsDeleted]
 GO
 ALTER TABLE [dbo].[User] SET (LOCK_ESCALATION = TABLE)
 GO

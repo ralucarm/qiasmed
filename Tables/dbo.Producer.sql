@@ -6,7 +6,11 @@ CREATE TABLE [dbo].[Producer] (
 		[IdProducer]      [int] IDENTITY(1, 1) NOT NULL,
 		[Name]            [nvarchar](100) COLLATE Latin1_General_CI_AS NULL,
 		[Description]     [nvarchar](1024) COLLATE Latin1_General_CI_AS NULL,
-
+		CONSTRAINT [PK_Brand]
+		PRIMARY KEY
+		CLUSTERED
+		([IdProducer])
+	ON [PRIMARY]
 ) ON [PRIMARY]
 GO
 ALTER TABLE [dbo].[Producer] SET (LOCK_ESCALATION = TABLE)

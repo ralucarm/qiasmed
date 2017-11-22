@@ -19,5 +19,13 @@ CREATE TABLE [dbo].[MigrationProductUntreated] (
 		[packaging]            [varchar](150) COLLATE Latin1_General_CI_AS NULL
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
+ALTER TABLE [dbo].[MigrationProductUntreated]
+	WITH CHECK
+	ADD CONSTRAINT [FK_MigrationProductUntreated_MigrationLogs]
+	FOREIGN KEY ([FkIdMigration]) REFERENCES [dbo].[MigrationLogs] ([IdMigration])
+ALTER TABLE [dbo].[MigrationProductUntreated]
+	CHECK CONSTRAINT [FK_MigrationProductUntreated_MigrationLogs]
+
+GO
 ALTER TABLE [dbo].[MigrationProductUntreated] SET (LOCK_ESCALATION = TABLE)
 GO

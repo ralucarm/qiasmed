@@ -1,14 +1,23 @@
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
 CREATE PROCEDURE [dbo].[sp_migration_process_general_insert_tables_data]
-		 @file_path varchar(800) = 'C:\Users\win81\Desktop\qiasmed\Template Import Produse.xlsx'
+	-- Add the parameters for the stored procedure here
+	 @file_path varchar(800) = 'C:\Users\win81\Desktop\qiasmed\Template Import Produse.xlsx'
 	,@excel_sheet_name varchar(150) = 'Sheet1'
 AS
 BEGIN
-			SET NOCOUNT ON;
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
 
-    	IF EXISTS (SELECT * FROM sys.objects WHERE [object_id] = OBJECT_ID('tmp_import_excel'))
+    -- Insert statements for procedure here
+	IF EXISTS (SELECT * FROM sys.objects WHERE [object_id] = OBJECT_ID('tmp_import_excel'))
 	BEGIN
 		DROP TABLE tmp_import_excel;
 	END
@@ -24,15 +33,18 @@ BEGIN
 
 	DECLARE @TSQL varchar(8000)
 
-	SELECT  @TSQL = 'SELECT * FROM OPENROWSET('Microsoft.ACE.OLEDB.12.0',
-               'EXCEL 12.0;DataBase=' + @file_path + 
-				';Extended Properties="EXCEL 12.0 Xml;HDR=NO', [' + @excel_sheet_name + '$])'
+	SELECT  @TSQL = 'SELECT * FROM OPENROWSET(''Microsoft.ACE.OLEDB.12.0'',
+               ''EXCEL 12.0;DataBase=' + @file_path + 
+				';Extended Properties="EXCEL 12.0 Xml;HDR=NO'', [' + @excel_sheet_name + '$])'
 	INSERT INTO tmp_import_excel
 	EXEC(@TSQL)
 	DELETE FROM tmp_import_excel WHERE f1 is null and f2 is null and f3 is null and f4 is null and f5 is null and f6 is null and f7 is null
 				and f8 is null and f9 is null
 
-			END
+	--ALTER TABLE tmp_import_excel ADD treated BIT
+	--UPDATE tmp_import_excel
+	--SET treated = 0
+END
 
 
 

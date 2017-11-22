@@ -20,8 +20,44 @@ CREATE TABLE [dbo].[MigrationLogs] (
 		[MonthMigration]           [varchar](100) COLLATE Latin1_General_CI_AS NULL,
 		[FkIdCountrySupplier]      [int] NULL,
 		[FkIdUser]                 [int] NULL,
-
+		CONSTRAINT [PK_MigrationLogs]
+		PRIMARY KEY
+		CLUSTERED
+		([IdMigration])
+	ON [PRIMARY]
 ) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[MigrationLogs]
+	WITH CHECK
+	ADD CONSTRAINT [FK_MigrationLogs_Country]
+	FOREIGN KEY ([FkIdCountrySupplier]) REFERENCES [dbo].[Country] ([IdCountry])
+ALTER TABLE [dbo].[MigrationLogs]
+	CHECK CONSTRAINT [FK_MigrationLogs_Country]
+
+GO
+ALTER TABLE [dbo].[MigrationLogs]
+	WITH CHECK
+	ADD CONSTRAINT [FK_MigrationLogs_Currency]
+	FOREIGN KEY ([FkIdCurrency]) REFERENCES [dbo].[Currency] ([IdCurrency])
+ALTER TABLE [dbo].[MigrationLogs]
+	CHECK CONSTRAINT [FK_MigrationLogs_Currency]
+
+GO
+ALTER TABLE [dbo].[MigrationLogs]
+	WITH CHECK
+	ADD CONSTRAINT [FK_MigrationLogs_Supplier]
+	FOREIGN KEY ([FKIdSupplier]) REFERENCES [dbo].[Supplier] ([IdSupplier])
+ALTER TABLE [dbo].[MigrationLogs]
+	CHECK CONSTRAINT [FK_MigrationLogs_Supplier]
+
+GO
+ALTER TABLE [dbo].[MigrationLogs]
+	WITH CHECK
+	ADD CONSTRAINT [FK_MigrationLogs_User]
+	FOREIGN KEY ([FkIdUser]) REFERENCES [dbo].[User] ([IdUser])
+ALTER TABLE [dbo].[MigrationLogs]
+	CHECK CONSTRAINT [FK_MigrationLogs_User]
+
 GO
 ALTER TABLE [dbo].[MigrationLogs] SET (LOCK_ESCALATION = TABLE)
 GO

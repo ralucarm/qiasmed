@@ -7,7 +7,11 @@ CREATE TABLE [dbo].[Image] (
 		[FKIdProduct]     [int] NULL,
 		[Path]            [nvarchar](100) COLLATE Latin1_General_CI_AS NULL,
 		[ImageName]       [nvarchar](50) COLLATE Latin1_General_CI_AS NULL,
-
+		CONSTRAINT [PK_Image]
+		PRIMARY KEY
+		CLUSTERED
+		([IdImage])
+	ON [PRIMARY]
 ) ON [PRIMARY]
 GO
 ALTER TABLE [dbo].[Image] SET (LOCK_ESCALATION = TABLE)

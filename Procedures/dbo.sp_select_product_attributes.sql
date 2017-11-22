@@ -1,23 +1,36 @@
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
 CREATE PROCEDURE [dbo].[sp_select_product_attributes] 
-			 @category varchar(255)
+	-- Add the parameters for the stored procedure here
+	-- Test Run :	[sp_select_product_attributes] 
+	 @category varchar(255)
 	,@unit_type varchar(255)
-		,@measurement_unit varchar(255)
+	--,@packing_mode varchar(255)
+	,@measurement_unit varchar(255)
 AS
 BEGIN
-			SET NOCOUNT ON;
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
 
-    	DECLARE @id_category int	
+    -- Insert statements for procedure here
+	DECLARE @id_category int	
 		,@id_unit_type int
-				,@id_measurement_unit int
+		--,@id_packing_mode int
+		,@id_measurement_unit int
 		,@nb_errors int
 		,@details_error varchar(2000) = ''
 		,@info_returned varchar(2000) = ''
 		,@cat_added bit = 0
 		,@unit_type_added bit = 0
-				,@measurement_unit_added bit = 0
+		--,@packing_mode_added bit = 0
+		,@measurement_unit_added bit = 0
 	BEGIN
 		IF (ISNULL(@category, '') = '') OR ([dbo].[CleanField](@category) = '-')
 		BEGIN
@@ -75,7 +88,7 @@ BEGIN
 
 		SELECT @id_category AS id_category, @id_unit_type AS id_unit_type, @id_measurement_unit as id_measurement_unit
 			, @nb_errors as nb_errors, @details_error as details_error, @info_returned as info_returned
-			, @cat_added AS cat_added, @unit_type_added AS unit_type_added
+			, @cat_added AS cat_added, @unit_type_added AS unit_type_added--, @packing_mode_added AS packing_mode_added
 			, @measurement_unit_added AS measurement_unit_added
 	END
 								

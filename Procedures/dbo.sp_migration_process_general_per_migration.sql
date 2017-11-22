@@ -2,8 +2,16 @@ SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
 
+-- =============================================
+-- Author:		Raluca Marcu
+-- Create date: 17.10.2017
+-- Description:	Migration Process 
+--				Initial Usage: Migration Process
+--				
+-- =============================================
 CREATE PROCEDURE [dbo].[sp_migration_process_general_per_migration]
-		  @file_path varchar(800) = 'C:\Users\win81\Desktop\qiasmed\fisiere_excel_de_import\EOLABS_2018_09_V0.xlsx' 
+	-- Add the parameters for the stored procedure here
+	  @file_path varchar(800) = 'C:\Users\win81\Desktop\qiasmed\koroglu_2017_09_V0.xlsx' 
 	 ,@excel_sheet_name varchar(150) = 'Produse'
 	 ,@migration_type varchar(50) = 'Excel'
 	 ,@id_migration_surse int = null
@@ -11,10 +19,13 @@ CREATE PROCEDURE [dbo].[sp_migration_process_general_per_migration]
 	 ,@id_user int = 3
 AS
 BEGIN
-			SET NOCOUNT ON;
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
 	SET XACT_ABORT ON;
 
-    	DECLARE @id_migration int
+    -- Insert statements for procedure here
+	DECLARE @id_migration int
 		,@current_date datetime = GETDATE()
 		,@year_migration int
 		,@month_migration varchar(100)
@@ -56,7 +67,12 @@ BEGIN
 							ELSE 0 END)
 		SET @currency = (SELECT [f2] FROM tmp_import_excel WHERE RTRIM(LTRIM(f1)) = 'MONEDA DE SCHIMB')
 
-										
+		--CREATE TABLE #tmp_country_gen (IdCountry int)
+		--INSERT INTO #tmp_country_gen (IdCountry)
+		--EXEC sp_select_country_from_supplier @supplier = @supplier
+		--SET @id_country = (SELECT IdCountry FROM #tmp_country_gen)
+		--DROP TABLE #tmp_country_gen 
+
 		IF (ISNULL(@currency, '') <> '') AND (RTRIM(LTRIM(@currency)) <> '-')
 		BEGIN
 			IF NOT EXISTS (SELECT * FROM Currency WHERE LabelName = [dbo].[CleanField](@currency))
@@ -83,7 +99,8 @@ BEGIN
 		WHERE RTRIM(LTRIM(f1)) <> 'AN' AND RTRIM(LTRIM(f1)) <> 'LUNA' AND RTRIM(LTRIM(f1)) <> 'FURNIZOR' AND RTRIM(LTRIM(f1)) <> 'DISCOUNT' 
 			AND RTRIM(LTRIM(f1)) <> 'MONEDA DE SCHIMB' AND RTRIM(LTRIM(f1)) <> 'CATEGORIE'
 
-				EXEC [sp_migration_process_general_per_migration_batch] @migration_type = @migration_type, @id_migration = @id_migration		
+		--INSERT INTO #tmp_migration(error_migration_message)
+		EXEC [sp_migration_process_general_per_migration_batch] @migration_type = @migration_type, @id_migration = @id_migration		
 		SET @error_migration_message = (SELECT Details FROM MigrationLogs WHERE IdMigration = @id_migration)
 		IF (ISNULL(@error_migration_message,'') = '')
 		BEGIN
@@ -92,9 +109,34 @@ BEGIN
 	END
 
 	DROP TABLE tmp_import_excel_top
-															
-						
-							
+	--Produse sterse?
+	--IF(@id_migration_surse IS NULL)
+	--BEGIN
+	--	IF ((SELECT COUNT(*) FROM MigrationLogs WHERE FkIdSupplier = @id_spider_name) = 1 AND (SELECT IdMigration FROM MigrationLogs WHERE FkIdSupplier = @id_spider_name) = @id_spider_name)
+	--	BEGIN
+	--		IF EXISTS(SELECT * FROM [dbo].[Product] WHERE FkIdSupplier = @id_spider_name 
+	--			AND (IdProduct NOT IN (SELECT IdProduct FROM [dbo].[MigrationLogsPerProduct] WHERE [IdMigration] = @id_migration ) OR
+	--									url_hash NOT IN (SELECT url_hash FROM [dbo].[MigrationProductUntreated] WHERE [IdMigration] = @id_migration)))
+	--		BEGIN
+	--			INSERT INTO [MigrationLogsPerProduct] ([IdMigration], [IdProduct], [Details], [MigrationStatus], [Date_Treatment])
+	--			SELECT @id_migration as [IdMigration], IdProduct as [IdProduct], NULL as [Details], 'Deleted' as [MigrationStatus], @current_date as [Date_Treatment]
+	--			FROM [dbo].[Product]
+	--			WHERE FkIdSupplier = @id_spider_name 
+	--				AND (IdProduct NOT IN (SELECT IdProduct FROM [dbo].[MigrationLogsPerProduct] WHERE [IdMigration] = @id_migration) OR
+	--									url_hash NOT IN (SELECT url_hash FROM [dbo].[MigrationProductUntreated] WHERE [IdMigration] = @id_migration))
+
+	--			UPDATE [dbo].[Product]
+	--			SET FkIdStatus = 3
+	--			WHERE IdProduct IN (SELECT IdProduct FROM [dbo].[MigrationLogsPerProduct] WHERE [IdMigration] = @id_migration AND [MigrationStatus] = 'Deleted')
+			
+	--			DECLARE @nb_products_deleted INT = (SELECT COUNT(IdProduct) FROM Product WHERE FKIdStatus = 3 AND  FkIdSupplier = @id_spider_name )
+	--			UPDATE MigrationLogs
+	--			SET NbProductsDeleted = @nb_products_deleted
+	--			WHERE IdMigration = @id_migration			
+	--		END
+	--	END
+	--END
+
 	DROP TABLE tmp_import_excel
 
 END

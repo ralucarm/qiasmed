@@ -1,14 +1,23 @@
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
 CREATE PROCEDURE [dbo].[sp_migration_process_general_per_migration_batch] 
-		 @migration_type varchar(50) = 'Excel'
+	-- Add the parameters for the stored procedure here
+	 @migration_type varchar(50) = 'Excel'
 	,@id_migration int = 3
 AS
 BEGIN
-			SET NOCOUNT ON;
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
 
-    	DECLARE  @category varchar(255)
+    -- Insert statements for procedure here
+	DECLARE  @category varchar(255)
 		,@name varchar(500)
 		,@product_code varchar(255)
 		,@unit_price varchar(255)
@@ -77,7 +86,12 @@ BEGIN
 					SET @nb_errors = @nb_errors + 1
 					SET @details_error = @details_error + ' Error: Unit Type "' + @unit_type + '" Not Found ' + CHAR(10) + CHAR(13)
 				END  	
-																								IF (@id_measurement_unit IS NULL)
+				--IF (@id_packing_mode IS NULL)
+				--BEGIN
+				--	SET @nb_errors = @nb_errors + 1
+				--	SET @details_error = @details_error + ' Error: Packing Mode "' + @packing_mode + '" Not Found ' + CHAR(10) + CHAR(13)
+				--END  
+				IF (@id_measurement_unit IS NULL)
 				BEGIN
 					SET @nb_errors = @nb_errors + 1
 					SET @details_error = @details_error + ' Error: Measurement Unit"' + @measurement_unit + '" Not Found ' + CHAR(10) + CHAR(13)
@@ -111,7 +125,25 @@ BEGIN
 						,@product_code as [ProductCode], @id_unit_type as [FkIdUnitType], @id_measurement_unit as [FkIdMeasurementUnit], @id_migration as FkIdMigration
 					SET @id_product = SCOPE_IDENTITY()
 
-																																																																																										
+					--BEGIN
+					--	CREATE TABLE #tmp_packing_mode (label varchar(50))
+					--	INSERT INTO #tmp_packing_mode(label)
+					--	EXEC spCalculSplit @packing_mode
+					--	IF EXISTS (SELECT * FROM #tmp_packing_mode WHERE [dbo].[CleanField](label) NOT IN (SELECT Label FROM  PackingMode))
+					--	BEGIN
+					--		INSERT INTO PackingMode(Label) 
+					--		SELECT [dbo].[CleanField](label) 
+					--		FROM #tmp_packing_mode 
+					--		WHERE [dbo].[CleanField](label) NOT IN (SELECT [dbo].[CleanField](label) 
+					--											FROM  PackingMode)
+					--		SET @info_returned = @info_returned + 'New PackingMode(s) Added to the table [dbo].[PackingMode]: ' + @packing_mode + ' One action required:' +  + CHAR(10) + CHAR(13)
+					--		SET @info_returned = @info_returned + ' 1.Validate the new PackingMode(s) added' + CHAR(10) + CHAR(13)
+					--		SET @info_returned = @info_returned + ' --------------------------------------------------------------------------------' + CHAR(10) + CHAR(13)
+					--		SET @packing_mode_added = 1
+					--	END
+					--	DROP TABLE #tmp_packing_mode
+					--END
+
 					CREATE TABLE #tmp_packing_mode_product (label varchar(50))
 					INSERT INTO #tmp_packing_mode_product(label)
 					EXEC spCalculSplit @packing_mode
@@ -185,7 +217,9 @@ END
 	SET Details = @message
 	WHERE IdMigration = @id_migration	
 	DROP TABLE TmpResults
-			 
+	--SELECT @nb_treated AS nb_treated, @nb_added_total as nb_added_total, @nb_updated_total as nb_updated_total, @nb_errors_total as nb_errors_total
+	--	,@details_error as details_error,@id_spider_name as id_spider_name, @id_migration_type as id_migration_type
+	 
 END
 
 

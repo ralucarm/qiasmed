@@ -6,7 +6,11 @@ CREATE TABLE [dbo].[Language] (
 		[IdLanguage]     [int] IDENTITY(1, 1) NOT NULL,
 		[Name]           [nvarchar](50) COLLATE Latin1_General_CI_AS NOT NULL,
 		[ISO]            [nvarchar](50) COLLATE Latin1_General_CI_AS NOT NULL,
-
+		CONSTRAINT [PK_Language]
+		PRIMARY KEY
+		CLUSTERED
+		([IdLanguage])
+	ON [PRIMARY]
 ) ON [PRIMARY]
 GO
 ALTER TABLE [dbo].[Language] SET (LOCK_ESCALATION = TABLE)

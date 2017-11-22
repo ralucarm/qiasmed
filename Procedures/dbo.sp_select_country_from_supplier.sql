@@ -1,11 +1,20 @@
 SET ANSI_NULLS ON
 SET QUOTED_IDENTIFIER ON
 GO
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
 CREATE PROCEDURE [dbo].[sp_select_country_from_supplier]
-			@supplier varchar(255)
+	-- Add the parameters for the stored procedure here
+	-- Test Run: sp_select_country_from_supplier 'BIOMAXIMA POLONIA '
+	@supplier varchar(255)
 AS
 BEGIN
-			SET NOCOUNT ON;
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
 	
 	CREATE TABLE #tmp_country (country_name VARCHAR(255), IdCountry INT)
 	DECLARE @name varchar(255), @id_country INT
