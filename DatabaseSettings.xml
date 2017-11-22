@@ -1,0 +1,7 @@
+<DatabaseSettings>
+  <Collation>Latin1_General_CI_AS</Collation>
+  <ServerVersion>Sql2014</ServerVersion>
+  <ServerName>RMARCU-NWIN</ServerName>
+  <DatabaseName>QiasMed</DatabaseName>
+  <DatabaseInformation Version="1" />
+</DatabaseSettings>
