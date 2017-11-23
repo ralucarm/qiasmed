@@ -42,6 +42,8 @@ BEGIN
 		,@unit_type_added bit = 0
 		,@packing_mode_added bit = 0
 		,@measurement_unit_added bit = 0
+		,@id_currency int
+		,@current_date datetime = GETDATE()
 
 	IF EXISTS (SELECT * FROM sys.objects WHERE [object_id] = OBJECT_ID('TmpResults'))
 	BEGIN
@@ -49,12 +51,13 @@ BEGIN
 	END
 	CREATE TABLE TmpResults (IdProduct int, IntegerResult int, ErrorMessage NVARCHAR(4000), Stage varchar(255))
 	
-	SELECT @id_supplier = FkIdSupplier FROM MigrationLogs WHERE IdMigration = @id_migration
+	SELECT @id_supplier = FkIdSupplier, @id_currency = FkIdCurrency FROM MigrationLogs WHERE IdMigration = @id_migration
 	IF EXISTS (SELECT * FROM Product WHERE FkIdSupplier = @id_supplier and ISNULL(IsVisible, 0) <> 0)
 	BEGIN
 		SET @nb_updated = (SELECT COUNT(*) FROM Product WHERE FkIdSupplier = @id_supplier and ISNULL(IsVisible, 0) <> 0)
 		UPDATE Product 
 		SET IsVisible = 0
+			,[DateUpdated] = @current_date
 		WHERE FkIdSupplier = @id_supplier and ISNULL(IsVisible, 0) <> 0
 	END
 
@@ -119,30 +122,13 @@ BEGIN
 				IF(@details_error = '' AND @nb_errors = 0)
 				BEGIN
 					
-					INSERT INTO Product ([FKIdSupplier],[FKIdCategory],[ProductName],[PricePerUnit],[IsVisible],[UnitsPerPackage], [ProductCode], [FkIdUnitType], [FkIdMeasurementUnit], [FkIdMigration])
+					INSERT INTO Product ([FKIdSupplier],[FKIdCategory],[ProductName],[PricePerUnit],[IsVisible],[UnitsPerPackage]
+						, [ProductCode], [FkIdUnitType], [FkIdMeasurementUnit], [FkIdMigration], [DateAdded], [FKIdCurrency])
 					SELECT @id_supplier as [FKIdSupplier], @id_category AS [FKIdCategory], @name as [ProductName]
 						, @unit_price as [PricePerUnit], 1 as [IsVisible], CAST(@units_per_package AS decimal(8,2)) as [UnitsPerPackage]
-						,@product_code as [ProductCode], @id_unit_type as [FkIdUnitType], @id_measurement_unit as [FkIdMeasurementUnit], @id_migration as FkIdMigration
+						, @product_code as [ProductCode], @id_unit_type as [FkIdUnitType], @id_measurement_unit as [FkIdMeasurementUnit]
+						, @id_migration as FkIdMigration, @current_date as [DateAdded], @id_currency as [FKIdCurrency]
 					SET @id_product = SCOPE_IDENTITY()
-
-					--BEGIN
-					--	CREATE TABLE #tmp_packing_mode (label varchar(50))
-					--	INSERT INTO #tmp_packing_mode(label)
-					--	EXEC spCalculSplit @packing_mode
-					--	IF EXISTS (SELECT * FROM #tmp_packing_mode WHERE [dbo].[CleanField](label) NOT IN (SELECT Label FROM  PackingMode))
-					--	BEGIN
-					--		INSERT INTO PackingMode(Label) 
-					--		SELECT [dbo].[CleanField](label) 
-					--		FROM #tmp_packing_mode 
-					--		WHERE [dbo].[CleanField](label) NOT IN (SELECT [dbo].[CleanField](label) 
-					--											FROM  PackingMode)
-					--		SET @info_returned = @info_returned + 'New PackingMode(s) Added to the table [dbo].[PackingMode]: ' + @packing_mode + ' One action required:' +  + CHAR(10) + CHAR(13)
-					--		SET @info_returned = @info_returned + ' 1.Validate the new PackingMode(s) added' + CHAR(10) + CHAR(13)
-					--		SET @info_returned = @info_returned + ' --------------------------------------------------------------------------------' + CHAR(10) + CHAR(13)
-					--		SET @packing_mode_added = 1
-					--	END
-					--	DROP TABLE #tmp_packing_mode
-					--END
 
 					CREATE TABLE #tmp_packing_mode_product (label varchar(50))
 					INSERT INTO #tmp_packing_mode_product(label)
