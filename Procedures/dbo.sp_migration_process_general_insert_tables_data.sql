@@ -8,8 +8,8 @@ GO
 -- =============================================
 CREATE PROCEDURE [dbo].[sp_migration_process_general_insert_tables_data]
 	-- Add the parameters for the stored procedure here
-	 @file_path varchar(800) = 'C:\Users\win81\Desktop\qiasmed\Template Import Produse.xlsx'
-	,@excel_sheet_name varchar(150) = 'Sheet1'
+	 @file_path varchar(800) = 'C:\Users\win81\Desktop\qiasmed\fisiere_excel_de_import\EOLABS_2018_09_V0.xlsx' 
+	,@excel_sheet_name varchar(150) = 'Produse'
 AS
 BEGIN
 	-- SET NOCOUNT ON added to prevent extra result sets from
@@ -31,11 +31,13 @@ BEGIN
 	, packing_mode varchar(255), measurement_unit varchar(255), [description] varchar(2000))
 
 
-	DECLARE @TSQL varchar(8000)
+	DECLARE @TSQL varchar(8000), @TSQL2 varchar(8000)
 
-	SELECT  @TSQL = 'SELECT * FROM OPENROWSET(''Microsoft.ACE.OLEDB.12.0'',
+	SELECT  @TSQL = 'SELECT * INTO #mytemptable FROM OPENROWSET(''Microsoft.ACE.OLEDB.12.0'',
                ''EXCEL 12.0;DataBase=' + @file_path + 
-				';Extended Properties="EXCEL 12.0 Xml;HDR=NO'', [' + @excel_sheet_name + '$])'
+				';Extended Properties="EXCEL 12.0 Xml;HDR=NO'', [' + @excel_sheet_name + '$])' + CHAR(10) + CHAR(13)
+	SET @TSQL = @TSQL + 'SELECT F1, F2, F3, F4, F5, F6, F7, F8, F9 FROM #mytemptable'
+	
 	INSERT INTO tmp_import_excel
 	EXEC(@TSQL)
 	DELETE FROM tmp_import_excel WHERE f1 is null and f2 is null and f3 is null and f4 is null and f5 is null and f6 is null and f7 is null

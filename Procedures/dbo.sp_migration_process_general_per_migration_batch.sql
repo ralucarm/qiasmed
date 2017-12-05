@@ -155,7 +155,7 @@ BEGIN
 				END					
 				ELSE
 				BEGIN
-					SET @nb_errors = @nb_errors + 1
+					--SET @nb_errors = @nb_errors + 1
 					INSERT INTO [MigrationProductUntreated]([category],[producer],[product_name],[product_code],[price_by_unit],[unit_type],[unit_pack],[packaging],[measurement_unit],[description],[currency],[FkIdMigration], [details_error])
 					select @category as [category], @id_supplier as [producer], @name as [product_name], @product_code as [product_code], @unit_price as [price_by_unit]
 							, @unit_type as [unit_type], @units_per_package as [unit_pack], @packing_mode as [packaging], @measurement_unit as [measurement_unit], @description as [description]
@@ -166,7 +166,7 @@ BEGIN
 			SET NBProductsTreated = @nb_treated
 				,NbProductsAdded = @nb_inserted
 				,NbProductsUpdated = @nb_updated
-				,NbErrors =  @nb_errors
+				,NbErrors =  isnull(NbErrors,0) + @nb_errors
 			WHERE IdMigration = @id_migration
 			SET @details_error = ''
 			SET @info_returned = ''
