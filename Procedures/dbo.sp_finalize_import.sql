@@ -35,6 +35,10 @@ BEGIN
 		,@nb_products_updated int = 0
 		,@nb_products_deleted int = 0
 
+
+
+
+
 	CREATE TABLE #tmp_categories (IdCategory int, Name varchar(500))
 	CREATE TABLE #tmp_type_units (IdUnitType int, Name varchar(500))
 	CREATE TABLE #tmp_packing_mode (IdPackingMode int, Name varchar(500))
